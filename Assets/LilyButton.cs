@@ -8,12 +8,21 @@ public class LilyButton : MonoBehaviour
     // Start is called before the first frame update
     public LilyType mLilyType = LilyType.None;
     public Button mButton;
+    public Image mBtnImg;
+    Global mGlobal;
     private bool isSelected = false; // Custom state for button press
-
+    private List<LilyButton> mAllBtns = new List<LilyButton>();
     void Start()
     {
         mButton = GetComponent<Button>();
+        mBtnImg = mButton.GetComponent<Image>();
         mButton.onClick.AddListener(OnButtonClick);
+        GameObject globalObj = GameObject.Find("GlobalObj");
+        mGlobal = globalObj.GetComponent<Global>();
+        GameObject[] allBtns = GameObject.FindGameObjectsWithTag("LilyButton");
+        foreach (GameObject obj in allBtns) {
+          mAllBtns.Add(obj.GetComponent<LilyButton>());
+        }
     }
 
     // Update is called once per frame
@@ -22,15 +31,30 @@ public class LilyButton : MonoBehaviour
         
     }
 
+    public void BtnSelect() {
+      ColorBlock cBlock = mButton.colors;
+      mBtnImg.color = cBlock.pressedColor;
+      isSelected = true;
+    }
+
+    public void BtnDeselect() {
+      ColorBlock cBlock = mButton.colors;
+      mBtnImg.color = cBlock.normalColor;
+      isSelected = false;
+    }
+
     void OnButtonClick() {
-        Debug.Log("You have clicked the button " + mLilyType.ToString("g"));
-        ColorBlock cBlock = mButton.colors;
-        Image buttonImage = mButton.GetComponent<Image>();
-        if (!isSelected) {
-          buttonImage.color = cBlock.pressedColor;
-        } else {
-          buttonImage.color = cBlock.normalColor;
+      if (!isSelected) {
+        BtnSelect();
+        mGlobal.OnLilySelect(mLilyType);
+        foreach (LilyButton lBtn in mAllBtns) {
+          if (lBtn != this) {
+            lBtn.BtnDeselect();
+          }
         }
-        isSelected = !isSelected;
+      } else {
+        BtnDeselect();
+        mGlobal.OnLilyDeselect();
+      }
     }
 }

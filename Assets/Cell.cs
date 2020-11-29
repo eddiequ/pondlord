@@ -4,116 +4,74 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class EventTriggerExample : EventTrigger
+public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public override void OnBeginDrag(PointerEventData data)
-    {
-        Debug.Log("OnBeginDrag called.");
-    }
-
-    public override void OnCancel(BaseEventData data)
-    {
-        Debug.Log("OnCancel called.");
-    }
-
-    public override void OnDeselect(BaseEventData data)
-    {
-        Debug.Log("OnDeselect called.");
-    }
-
-    public override void OnDrag(PointerEventData data)
-    {
-        Debug.Log("OnDrag called.");
-    }
-
-    public override void OnDrop(PointerEventData data)
-    {
-        Debug.Log("OnDrop called.");
-    }
-
-    public override void OnEndDrag(PointerEventData data)
-    {
-        Debug.Log("OnEndDrag called.");
-    }
-
-    public override void OnInitializePotentialDrag(PointerEventData data)
-    {
-        Debug.Log("OnInitializePotentialDrag called.");
-    }
-
-    public override void OnMove(AxisEventData data)
-    {
-        Debug.Log("OnMove called.");
-    }
-
-    public override void OnPointerClick(PointerEventData data)
-    {
-        Debug.Log("OnPointerClick called.");
-    }
-
-    public override void OnPointerDown(PointerEventData data)
-    {
-        Debug.Log("OnPointerDown called.");
-    }
-
-    public override void OnPointerEnter(PointerEventData data)
-    {
-        Debug.Log("OnPointerEnter called.");
-    }
-
-    public override void OnPointerExit(PointerEventData data)
-    {
-        Debug.Log("OnPointerExit called.");
-    }
-
-    public override void OnPointerUp(PointerEventData data)
-    {
-        Debug.Log("OnPointerUp called.");
-    }
-
-    public override void OnScroll(PointerEventData data)
-    {
-        Debug.Log("OnScroll called.");
-    }
-
-    public override void OnSelect(BaseEventData data)
-    {
-        Debug.Log("OnSelect called.");
-    }
-
-    public override void OnSubmit(BaseEventData data)
-    {
-        Debug.Log("OnSubmit called.");
-    }
-
-    public override void OnUpdateSelected(BaseEventData data)
-    {
-        Debug.Log("OnUpdateSelected called.");
-    }
-}
-
-public class Cell : MonoBehaviour, IPointerEnterHandler
-{
-    public Image mImage;
+    public Image mBgImg, mContentImg;
     public RectTransform mRectTransform;
+    public Color mNormalColor;
     public Board mBoard = null;
+    public Global mGlobal;
+    
+    public Sprite goldLilySprite, blueLilySprite, pinkLilySprite, whiteLilySprite;
     // Start is called before the first frame update
     void Start()
     {
-        mRectTransform = GetComponent<RectTransform>();
-        // EventTrigger trigger = GetComponent<EventTrigger>();
-        // gameObject.AddComponent<EventTriggerExample>();
-    }
+        goldLilySprite = Resources.Load<Sprite>("img_yellow");
+        blueLilySprite = Resources.Load<Sprite>("img_blue");
+        pinkLilySprite = Resources.Load<Sprite>("img_pink");
+        whiteLilySprite = Resources.Load<Sprite>("img_white");
 
+        mRectTransform = GetComponent<RectTransform>();
+        mBgImg = GetComponent<Image>();
+        GameObject c = transform.GetChild(0).gameObject;
+        mContentImg = c.GetComponent<Image>();
+        GameObject globalObj = GameObject.Find("GlobalObj");
+        mGlobal = globalObj.GetComponent<Global>();
+        mBgImg.color = mNormalColor;
+        mContentImg.color = mNormalColor;
+    }
     // Update is called once per frame
     void Update()
     {
         
     }
 
-     public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData) {
+      Debug.Log("Cell click");
+      if (mGlobal.mSelectedLilyType != LilyType.None) {
+        Debug.Log("Cell click " + mGlobal.mSelectedLilyType.ToString("g"));
+        switch (mGlobal.mSelectedLilyType)
+        {
+            case LilyType.Gold: 
+              mContentImg.sprite = goldLilySprite;
+              break;
+            case LilyType.Blue:
+              mContentImg.sprite = blueLilySprite;
+              break;
+            case LilyType.Pink:
+              mContentImg.sprite = pinkLilySprite;
+              break;
+            case LilyType.White:
+              mContentImg.sprite = whiteLilySprite;
+              break;
+            default:
+              break;
+        }
+      }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("The cursor entered the selectable UI element.");
+        Color newColor = mNormalColor;
+        newColor.a = 0.8f;
+        mBgImg.color = newColor;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+      Debug.Log("The cursor exited the selectable UI element.");
+      mBgImg.color = mNormalColor;
     }
 
 }

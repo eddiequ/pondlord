@@ -30,4 +30,12 @@ public class Global : MonoBehaviour
     {
         
     }
+
+    public void OnLilySelect(LilyType newType) {
+      mSelectedLilyType = newType;
+    }
+
+    public void OnLilyDeselect() {
+      mSelectedLilyType = LilyType.None;
+    }
 }

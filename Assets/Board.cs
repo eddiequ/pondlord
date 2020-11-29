@@ -23,6 +23,11 @@ public class Board : MonoBehaviour
             rectTransform.anchoredPosition = new Vector2((x * 100) + 50, (y * 100) + 50);
             mAllCells[x, y] = newCell.GetComponent<Cell>();
             mAllCells[x, y].mBoard = this;
+            if ((x + y) % 2 == 0) {
+              mAllCells[x, y].mNormalColor = new Color(0.9f, 0.85f, 0.72f, 1.0f);
+            } else {
+              mAllCells[x, y].mNormalColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            }
           }
         }
 
@@ -30,12 +35,9 @@ public class Board : MonoBehaviour
         {
             for (int y = 0; y < 8; y++)
             {
-                // Offset for every other line
                 int offset = (y % 2 != 0) ? 0 : 1;
                 int finalX = x + offset;
-
-                // Color
-                mAllCells[finalX, y].GetComponent<Image>().color = new Color32(230, 220, 187, 255);
+                
             }
         }
     }
